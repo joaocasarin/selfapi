@@ -1,0 +1,36 @@
+version: "3.8"
+
+services:
+    web:
+        container_name: selfapi
+        restart: always
+        depends_on:
+            - db
+        build:
+            context: .
+            dockerfile: Dockerfile
+            target: production
+        ports:
+            - ${PORT}:${PORT}
+        environment:
+            MONGODB_URL: mongodb://${MONGODB_USERNAME}:${MONGODB_PASSWORD}@db:${MONGODB_PORT}/${MONGODB_DATABASE}
+            PORT: ${PORT}
+            NODE_ENV: production
+            AUTH_TOKEN: ${AUTH_TOKEN}
+    db:
+        container_name: mongodb
+        image: bitnami/mongodb:5.0.4-debian-10-r5
+        restart: always
+        ports:
+            - ${MONGODB_PORT}:${MONGODB_PORT}
+        environment:
+            MONGODB_ROOT_PASSWORD: ${MONGODB_PASSWORD}
+            MONGODB_USERNAME: ${MONGODB_USERNAME}
+            MONGODB_PASSWORD: ${MONGODB_PASSWORD}
+            MONGODB_DATABASE: ${MONGODB_DATABASE}
+        volumes:
+            - mongodb_data:/bitnami/mongodb
+
+volumes:
+    mongodb_data:
+        driver: local
