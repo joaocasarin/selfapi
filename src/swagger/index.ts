@@ -1,4 +1,5 @@
 import dotenv from 'dotenv';
+import { localhost, production } from './servers';
 
 dotenv.config();
 
@@ -18,16 +19,7 @@ export const swaggerOptions = {
             url: 'https://opensource.org/licenses/MIT'
         }
     },
-    servers: [
-        {
-            url: `http://localhost:${process.env.PORT}/v1`,
-            description: 'Development server'
-        },
-        {
-            url: 'https://joaocasarin.herokuapp.com/v1',
-            description: 'Production server'
-        }
-    ],
+    servers: process.env.NODE_ENV !== 'production' ? [localhost, production] : [production],
     paths: {
         '/projects': {
             get: {
