@@ -9,6 +9,7 @@ module.exports = {
     coveragePathIgnorePatterns: [
         '/node_modules/',
         '/dist/',
+        '/src/swagger/',
         '.prettierrc.js',
         '.eslintrc.js',
         'jest.config.js'
