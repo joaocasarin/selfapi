@@ -34,6 +34,7 @@ CMD yarn dev
 FROM base as production
 # we are going to use the dir /home/node/app
 ENV APP=/home/node/app
+ENV NODE_ENV=production
 WORKDIR $APP
 # changing the owner and group of working directory
 RUN chown node:node $APP
