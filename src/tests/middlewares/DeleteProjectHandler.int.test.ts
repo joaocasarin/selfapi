@@ -5,6 +5,7 @@ import { MongoMemoryServer } from 'mongodb-memory-server';
 import supertest from 'supertest';
 import mongoose from 'mongoose';
 import { app } from '../../app';
+import { ProjectModel } from '../../schemas/ProjectSchema';
 
 describe('DeleteProjectHandler', () => {
     let mongoServer: MongoMemoryServer;
@@ -21,19 +22,23 @@ describe('DeleteProjectHandler', () => {
         await mongoServer.stop();
     });
 
-    it('should return delete the created project', async () => {
+    it('should delete the created project', async () => {
         const createResponse = await supertest(app)
             .post('/v1/projects/create')
             .send({
-                name: 'test',
-                description: 'test',
-                github: 'test',
-                logo: 'test'
+                name: 'name',
+                description: 'description',
+                stack: ['stack'],
+                sourceCode: 'sourceCode',
+                livePreview: 'livePreview'
             })
             .set('Authorization', `Bearer ${process.env.AUTH_TOKEN}`);
 
+        const { project }: { project: ProjectModel } = createResponse.body;
+        const createdProjectId = project.id;
+
         const response = await supertest(app)
-            .delete(`/v1/projects/delete/${createResponse.body.project.id}`)
+            .delete(`/v1/projects/delete/${createdProjectId}`)
             .set('Authorization', `Bearer ${process.env.AUTH_TOKEN}`);
 
         expect(response.status).toEqual(204);

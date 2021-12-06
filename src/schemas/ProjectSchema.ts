@@ -1,16 +1,24 @@
 import { Schema, model } from 'mongoose';
 import { v4 as uuidv4 } from 'uuid';
 
-export interface IProject {
-    id?: string;
+export interface RequestProjectBody {
     name: string;
     description: string;
-    app?: string;
-    github: string;
-    logo: string;
+    stack: string[];
+    sourceCode: string;
+    livePreview: string;
 }
 
-const ProjectSchema = new Schema<IProject>({
+export interface ProjectModel {
+    id: string;
+    name: string;
+    description: string;
+    stack: string[];
+    sourceCode: string;
+    livePreview: string;
+}
+
+const ProjectSchema = new Schema<ProjectModel>({
     id: {
         type: String,
         default: uuidv4,
@@ -26,18 +34,18 @@ const ProjectSchema = new Schema<IProject>({
         type: String,
         required: true
     },
-    app: {
-        type: String,
-        required: false
+    stack: {
+        type: [String],
+        required: true
     },
-    github: {
+    sourceCode: {
         type: String,
         required: true
     },
-    logo: {
+    livePreview: {
         type: String,
         required: true
     }
 });
 
-export const Project = model<IProject>('project', ProjectSchema);
+export const Project = model<ProjectModel>('project', ProjectSchema);

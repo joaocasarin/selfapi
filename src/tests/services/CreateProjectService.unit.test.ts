@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import { MongoMemoryServer } from 'mongodb-memory-server';
-import { IProject } from '../../schemas/ProjectSchema';
-import { projectWithApp } from '../mocks/Projects';
+import { ProjectModel } from '../../schemas/ProjectSchema';
+import { projectOne } from '../mocks/Projects';
 import { CreateProjectService } from '../../services';
 import { MongooseError } from '../../errors';
 import { uuidv4Regex } from '../../utils';
@@ -23,22 +23,22 @@ describe('CreateProjectService', () => {
 
     it('should create a project', async () => {
         const service = new CreateProjectService();
-        const result = (await service.execute(projectWithApp)) as IProject;
+        const result = (await service.execute(projectOne)) as ProjectModel;
 
-        expect(result.name).toEqual(projectWithApp.name);
-        expect(result.description).toEqual(projectWithApp.description);
-        expect(result.github).toEqual(projectWithApp.github);
-        expect(result.logo).toEqual(projectWithApp.logo);
-        expect(result.app).toEqual(projectWithApp.app);
         expect(result.id).toMatch(uuidv4Regex);
+        expect(result.name).toEqual(projectOne.name);
+        expect(result.description).toEqual(projectOne.description);
+        expect(result.stack).toEqual(projectOne.stack);
+        expect(result.sourceCode).toEqual(projectOne.sourceCode);
+        expect(result.livePreview).toEqual(projectOne.livePreview);
     });
 
     it('should throw an error if the project is found in the database', async () => {
         const service = new CreateProjectService();
-        (await service.execute(projectWithApp)) as IProject;
+        (await service.execute(projectOne)) as ProjectModel;
 
-        await expect(service.execute(projectWithApp)).rejects.toThrow(
-            MongooseError.projectAlreadyExists(projectWithApp.name)
+        await expect(service.execute(projectOne)).rejects.toThrow(
+            MongooseError.projectAlreadyExists(projectOne.name)
         );
     });
 });

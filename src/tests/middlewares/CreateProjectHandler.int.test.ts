@@ -26,8 +26,9 @@ describe('ProjectAuthentication', () => {
             .post('/v1/projects/create')
             .send({
                 description: 'description',
-                github: 'github',
-                logo: 'logo'
+                stack: ['stack'],
+                sourceCode: 'sourceCode',
+                livePreview: 'livePreview'
             })
             .set('Authorization', `Bearer ${process.env.AUTH_TOKEN}`);
 
@@ -47,8 +48,9 @@ describe('ProjectAuthentication', () => {
             .send({
                 name: 1,
                 description: 'description',
-                github: 'github',
-                logo: 'logo'
+                stack: ['stack'],
+                sourceCode: 'sourceCode',
+                livePreview: 'livePreview'
             })
             .set('Authorization', `Bearer ${process.env.AUTH_TOKEN}`);
 
@@ -67,8 +69,9 @@ describe('ProjectAuthentication', () => {
             .post('/v1/projects/create')
             .send({
                 name: 'name',
-                github: 'github',
-                logo: 'logo'
+                stack: ['stack'],
+                sourceCode: 'sourceCode',
+                livePreview: 'livePreview'
             })
             .set('Authorization', `Bearer ${process.env.AUTH_TOKEN}`);
 
@@ -88,8 +91,9 @@ describe('ProjectAuthentication', () => {
             .send({
                 name: 'name',
                 description: 1,
-                github: 'github',
-                logo: 'logo'
+                stack: ['stack'],
+                sourceCode: 'sourceCode',
+                livePreview: 'livePreview'
             })
             .set('Authorization', `Bearer ${process.env.AUTH_TOKEN}`);
 
@@ -103,13 +107,14 @@ describe('ProjectAuthentication', () => {
         expect(response.body.error.statusCode).toEqual(400);
     });
 
-    it('should return an error because there is no github field', async () => {
+    it('should return an error because there is no stack field', async () => {
         const response = await supertest(app)
             .post('/v1/projects/create')
             .send({
                 name: 'name',
                 description: 'description',
-                logo: 'logo'
+                sourceCode: 'sourceCode',
+                livePreview: 'livePreview'
             })
             .set('Authorization', `Bearer ${process.env.AUTH_TOKEN}`);
 
@@ -118,19 +123,20 @@ describe('ProjectAuthentication', () => {
         expect(response.body.error).toHaveProperty('name');
         expect(response.body.error.name).toEqual('ApiError');
         expect(response.body.error).toHaveProperty('message');
-        expect(response.body.error.message).toEqual('Project Github link is required.');
+        expect(response.body.error.message).toEqual('Project stack is required.');
         expect(response.body.error).toHaveProperty('statusCode');
         expect(response.body.error.statusCode).toEqual(400);
     });
 
-    it('should return an error because github field is not a string', async () => {
+    it('should return an error because stack field is not a string array', async () => {
         const response = await supertest(app)
             .post('/v1/projects/create')
             .send({
                 name: 'name',
                 description: 'description',
-                github: 1,
-                logo: 'logo'
+                stack: ['1', 2],
+                sourceCode: 'sourceCode',
+                livePreview: 'livePreview'
             })
             .set('Authorization', `Bearer ${process.env.AUTH_TOKEN}`);
 
@@ -139,18 +145,19 @@ describe('ProjectAuthentication', () => {
         expect(response.body.error).toHaveProperty('name');
         expect(response.body.error.name).toEqual('ApiError');
         expect(response.body.error).toHaveProperty('message');
-        expect(response.body.error.message).toEqual('Project Github link must be a string.');
+        expect(response.body.error.message).toEqual('Project stack must be a string array.');
         expect(response.body.error).toHaveProperty('statusCode');
         expect(response.body.error.statusCode).toEqual(400);
     });
 
-    it('should return an error because there is no logo field', async () => {
+    it('should return an error because there is no sourceCode field', async () => {
         const response = await supertest(app)
             .post('/v1/projects/create')
             .send({
                 name: 'name',
                 description: 'description',
-                github: 'github'
+                stack: ['stack'],
+                livePreview: 'livePreview'
             })
             .set('Authorization', `Bearer ${process.env.AUTH_TOKEN}`);
 
@@ -159,19 +166,20 @@ describe('ProjectAuthentication', () => {
         expect(response.body.error).toHaveProperty('name');
         expect(response.body.error.name).toEqual('ApiError');
         expect(response.body.error).toHaveProperty('message');
-        expect(response.body.error.message).toEqual('Project logo is required.');
+        expect(response.body.error.message).toEqual('Project sourceCode is required.');
         expect(response.body.error).toHaveProperty('statusCode');
         expect(response.body.error.statusCode).toEqual(400);
     });
 
-    it('should return an error because logo field is not a string', async () => {
+    it('should return an error because sourceCode field is not a string', async () => {
         const response = await supertest(app)
             .post('/v1/projects/create')
             .send({
                 name: 'name',
                 description: 'description',
-                github: 'github',
-                logo: 1
+                stack: ['stack'],
+                sourceCode: 1,
+                livePreview: 'livePreview'
             })
             .set('Authorization', `Bearer ${process.env.AUTH_TOKEN}`);
 
@@ -180,20 +188,19 @@ describe('ProjectAuthentication', () => {
         expect(response.body.error).toHaveProperty('name');
         expect(response.body.error.name).toEqual('ApiError');
         expect(response.body.error).toHaveProperty('message');
-        expect(response.body.error.message).toEqual('Project logo must be a string.');
+        expect(response.body.error.message).toEqual('Project sourceCode must be a string.');
         expect(response.body.error).toHaveProperty('statusCode');
         expect(response.body.error.statusCode).toEqual(400);
     });
 
-    it('should return an error because app field was used and it is not a string', async () => {
+    it('should return an error because there is no livePreview field', async () => {
         const response = await supertest(app)
             .post('/v1/projects/create')
             .send({
                 name: 'name',
                 description: 'description',
-                github: 'github',
-                logo: 'logo',
-                app: 1
+                stack: ['stack'],
+                sourceCode: 'sourceCode'
             })
             .set('Authorization', `Bearer ${process.env.AUTH_TOKEN}`);
 
@@ -202,7 +209,29 @@ describe('ProjectAuthentication', () => {
         expect(response.body.error).toHaveProperty('name');
         expect(response.body.error.name).toEqual('ApiError');
         expect(response.body.error).toHaveProperty('message');
-        expect(response.body.error.message).toEqual('Project app must be a string.');
+        expect(response.body.error.message).toEqual('Project livePreview is required.');
+        expect(response.body.error).toHaveProperty('statusCode');
+        expect(response.body.error.statusCode).toEqual(400);
+    });
+
+    it('should return an error because livePreview field is not a string', async () => {
+        const response = await supertest(app)
+            .post('/v1/projects/create')
+            .send({
+                name: 'name',
+                description: 'description',
+                stack: ['stack'],
+                sourceCode: 'sourceCode',
+                livePreview: 1
+            })
+            .set('Authorization', `Bearer ${process.env.AUTH_TOKEN}`);
+
+        expect(response.status).toEqual(400);
+        expect(response.body).toHaveProperty('error');
+        expect(response.body.error).toHaveProperty('name');
+        expect(response.body.error.name).toEqual('ApiError');
+        expect(response.body.error).toHaveProperty('message');
+        expect(response.body.error.message).toEqual('Project livePreview must be a string.');
         expect(response.body.error).toHaveProperty('statusCode');
         expect(response.body.error.statusCode).toEqual(400);
     });

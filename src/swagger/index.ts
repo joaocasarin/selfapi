@@ -1,3 +1,7 @@
+import dotenv from 'dotenv';
+
+dotenv.config();
+
 export const swaggerOptions = {
     openapi: '3.0.3',
     info: {
@@ -16,7 +20,7 @@ export const swaggerOptions = {
     },
     servers: [
         {
-            url: 'http://localhost:3000/v1',
+            url: `http://localhost:${process.env.PORT}/v1`,
             description: 'Development server'
         },
         {
@@ -40,7 +44,7 @@ export const swaggerOptions = {
                                         projects: {
                                             type: 'array',
                                             items: {
-                                                $ref: '#/components/schemas/ListProject'
+                                                $ref: '#/components/schemas/ResponseBodyProject'
                                             }
                                         }
                                     }
@@ -69,7 +73,7 @@ export const swaggerOptions = {
                     content: {
                         'application/json': {
                             schema: {
-                                $ref: '#/components/schemas/Project'
+                                $ref: '#/components/schemas/RequestBodyProject'
                             }
                         }
                     }
@@ -89,7 +93,7 @@ export const swaggerOptions = {
                                     properties: {
                                         project: {
                                             type: 'object',
-                                            $ref: '#/components/schemas/CreateProject'
+                                            $ref: '#/components/schemas/CreatedProject'
                                         }
                                     }
                                 }
@@ -209,7 +213,30 @@ export const swaggerOptions = {
     },
     components: {
         schemas: {
-            ListProject: {
+            RequestBodyProject: {
+                type: 'object',
+                properties: {
+                    name: {
+                        type: 'string'
+                    },
+                    description: {
+                        type: 'string'
+                    },
+                    stack: {
+                        type: 'array',
+                        items: {
+                            type: 'string'
+                        }
+                    },
+                    sourceCode: {
+                        type: 'string'
+                    },
+                    livePreview: {
+                        type: 'string'
+                    }
+                }
+            },
+            ResponseBodyProject: {
                 type: 'object',
                 properties: {
                     id: {
@@ -221,62 +248,45 @@ export const swaggerOptions = {
                     description: {
                         type: 'string'
                     },
-                    github: {
+                    stack: {
+                        type: 'array',
+                        items: {
+                            type: 'string'
+                        }
+                    },
+                    sourceCode: {
                         type: 'string'
                     },
-                    logo: {
+                    livePreview: {
                         type: 'string'
-                    },
-                    app: {
-                        type: 'string',
-                        required: false
                     }
                 }
             },
-            Project: {
+            CreatedProject: {
                 type: 'object',
                 properties: {
+                    id: {
+                        type: 'string'
+                    },
                     name: {
                         type: 'string'
                     },
                     description: {
                         type: 'string'
                     },
-                    github: {
+                    stack: {
+                        type: 'array',
+                        items: {
+                            type: 'string'
+                        }
+                    },
+                    sourceCode: {
                         type: 'string'
                     },
-                    logo: {
+                    livePreview: {
                         type: 'string'
-                    },
-                    app: {
-                        type: 'string',
-                        required: false
-                    }
-                }
-            },
-            CreateProject: {
-                type: 'object',
-                properties: {
-                    name: {
-                        type: 'string'
-                    },
-                    description: {
-                        type: 'string'
-                    },
-                    github: {
-                        type: 'string'
-                    },
-                    logo: {
-                        type: 'string'
-                    },
-                    app: {
-                        type: 'string',
-                        required: false
                     },
                     _id: {
-                        type: 'string'
-                    },
-                    id: {
                         type: 'string'
                     },
                     __v: {
