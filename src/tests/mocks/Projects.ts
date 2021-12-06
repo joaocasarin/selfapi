@@ -1,16 +1,17 @@
-import { IProject } from '../../schemas/ProjectSchema';
+import { RequestProjectBody } from '../../schemas/ProjectSchema';
 
-export const projectWithApp: IProject = {
+export const projectOne: RequestProjectBody = {
     name: 'Test Project',
     description: 'Test Project Description',
-    app: 'Test App',
-    github: 'Test Github',
-    logo: 'Test Logo'
+    stack: ['react', 'typescript'],
+    sourceCode: 'Source Test Project',
+    livePreview: 'Live Test Project'
 };
 
-export const projectWithoutApp: IProject = {
+export const projectTwo: RequestProjectBody = {
     name: 'Test Project 2',
     description: 'Test Project Description 2',
-    github: 'Test Github 2',
-    logo: 'Test Logo 2'
+    stack: ['angular', 'mongodb'],
+    sourceCode: 'Source Test Project 2',
+    livePreview: 'Live Test Project 2'
 };

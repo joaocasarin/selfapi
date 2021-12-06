@@ -5,7 +5,7 @@ import supertest from 'supertest';
 import mongoose from 'mongoose';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import { app } from '../../app';
-import { projectWithApp, projectWithoutApp } from '../mocks/Projects';
+import { projectOne, projectTwo } from '../mocks/Projects';
 
 describe('ProjectAuthentication', () => {
     let mongoServer: MongoMemoryServer;
@@ -23,7 +23,7 @@ describe('ProjectAuthentication', () => {
     });
 
     it('should return an error telling to pass the authorization token in the headers', async () => {
-        const response = await supertest(app).post('/v1/projects/create').send(projectWithApp);
+        const response = await supertest(app).post('/v1/projects/create').send(projectOne);
 
         expect(response.status).toEqual(403);
         expect(response.body).toHaveProperty('error');
@@ -39,7 +39,7 @@ describe('ProjectAuthentication', () => {
         const response = await supertest(app)
             .post('/v1/projects/create')
             .set('authorization', 'Bearer faketoken')
-            .send(projectWithoutApp);
+            .send(projectTwo);
 
         expect(response.status).toEqual(401);
         expect(response.body).toHaveProperty('error');

@@ -1,8 +1,8 @@
-import { IProject, Project } from '../schemas/ProjectSchema';
+import { RequestProjectBody, Project } from '../schemas/ProjectSchema';
 import { MongooseError } from '../errors';
 
 export class CreateProjectService {
-    public async execute(project: IProject): Promise<IProject> {
+    public async execute(project: RequestProjectBody): Promise<RequestProjectBody> {
         const newProject = new Project(project);
 
         if (await Project.findOne({ name: project.name })) {

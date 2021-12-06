@@ -5,7 +5,8 @@ import supertest from 'supertest';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import mongoose from 'mongoose';
 import { app } from '../../app';
-import { projectWithApp } from '../mocks/Projects';
+import { projectOne } from '../mocks/Projects';
+import { ProjectModel } from '../../schemas/ProjectSchema';
 
 describe('DeleteProjectController', () => {
     let mongoServer: MongoMemoryServer;
@@ -25,9 +26,11 @@ describe('DeleteProjectController', () => {
     it('should delete the project with the given id', async () => {
         const createResponse = await supertest(app)
             .post('/v1/projects/create')
-            .send(projectWithApp)
+            .send(projectOne)
             .set('Authorization', `Bearer ${process.env.AUTH_TOKEN}`);
-        const { id } = createResponse.body.project;
+
+        const { project }: { project: ProjectModel } = createResponse.body;
+        const { id } = project;
 
         const response = await supertest(app)
             .delete(`/v1/projects/delete/${id}`)

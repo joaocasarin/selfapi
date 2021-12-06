@@ -1,8 +1,9 @@
 import mongoose from 'mongoose';
 import { MongoMemoryServer } from 'mongodb-memory-server';
-import { IProject, Project } from '../../schemas/ProjectSchema';
-import { projectWithApp, projectWithoutApp } from '../mocks/Projects';
+import { ProjectModel, Project } from '../../schemas/ProjectSchema';
+import { projectOne, projectTwo } from '../mocks/Projects';
 import { GetProjectsService } from '../../services';
+import { uuidv4Regex } from '../../utils';
 
 describe('GetProjectsService', () => {
     let mongoServer: MongoMemoryServer;
@@ -20,27 +21,30 @@ describe('GetProjectsService', () => {
     });
 
     it('should return a list of projects', async () => {
-        const project: IProject = await Project.create(projectWithApp);
-        const project2: IProject = await Project.create(projectWithoutApp);
+        const project: ProjectModel = await Project.create(projectOne);
+        const project2: ProjectModel = await Project.create(projectTwo);
 
         const service = new GetProjectsService();
-        const result = (await service.execute()) as IProject[];
+        const [resultOne, resultTwo] = (await service.execute()) as ProjectModel[];
 
-        expect(result[0].name).toEqual(project.name);
-        expect(result[0].description).toEqual(project.description);
-        expect(result[0].github).toEqual(project.github);
-        expect(result[0].logo).toEqual(project.logo);
-        expect(result[0].app).toEqual(project.app);
+        expect(resultOne.id).toMatch(uuidv4Regex);
+        expect(resultOne.name).toEqual(project.name);
+        expect(resultOne.description).toEqual(project.description);
+        expect(resultOne.stack).toEqual(project.stack);
+        expect(resultOne.sourceCode).toEqual(project.sourceCode);
+        expect(resultOne.livePreview).toEqual(project.livePreview);
 
-        expect(result[1].name).toEqual(project2.name);
-        expect(result[1].description).toEqual(project2.description);
-        expect(result[1].github).toEqual(project2.github);
-        expect(result[1].logo).toEqual(project2.logo);
+        expect(resultTwo.id).toMatch(uuidv4Regex);
+        expect(resultTwo.name).toEqual(project2.name);
+        expect(resultTwo.description).toEqual(project2.description);
+        expect(resultTwo.stack).toEqual(project2.stack);
+        expect(resultTwo.sourceCode).toEqual(project2.sourceCode);
+        expect(resultTwo.livePreview).toEqual(project2.livePreview);
     });
 
     it('should return an empty list of projects', async () => {
         const service = new GetProjectsService();
-        const result = (await service.execute()) as IProject[];
+        const result = (await service.execute()) as ProjectModel[];
         expect(result).toEqual([]);
     });
 });

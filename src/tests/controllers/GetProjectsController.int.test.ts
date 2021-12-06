@@ -4,9 +4,9 @@ dotenv.config();
 import supertest from 'supertest';
 import mongoose from 'mongoose';
 import { MongoMemoryServer } from 'mongodb-memory-server';
-import { projectWithApp } from '../mocks/Projects';
+import { projectOne } from '../mocks/Projects';
 import { app } from '../../app';
-import { Project, IProject } from '../../schemas/ProjectSchema';
+import { Project, ProjectModel } from '../../schemas/ProjectSchema';
 import { GetProjectsService } from '../../services';
 import { uuidv4Regex } from '../../utils';
 
@@ -26,7 +26,7 @@ describe('GetProjectsController', () => {
     });
 
     it('should return 200 and a list of projects', async () => {
-        await Project.create(projectWithApp);
+        await Project.create(projectOne);
 
         const response = await supertest(app).get('/v1/projects');
 
@@ -34,20 +34,20 @@ describe('GetProjectsController', () => {
         expect(response.body).toHaveProperty('projects');
         expect(response.body.projects).toHaveLength(1);
 
-        const project: IProject = response.body.projects[0];
+        const project: ProjectModel = response.body.projects[0];
 
         expect(project).toHaveProperty('id');
         expect(project).toHaveProperty('name');
         expect(project).toHaveProperty('description');
-        expect(project).toHaveProperty('github');
-        expect(project).toHaveProperty('logo');
-        expect(project).toHaveProperty('app');
+        expect(project).toHaveProperty('stack');
+        expect(project).toHaveProperty('sourceCode');
+        expect(project).toHaveProperty('livePreview');
         expect(project.id).toMatch(uuidv4Regex);
-        expect(project.name).toEqual(projectWithApp.name);
-        expect(project.description).toEqual(projectWithApp.description);
-        expect(project.github).toEqual(projectWithApp.github);
-        expect(project.logo).toEqual(projectWithApp.logo);
-        expect(project.app).toEqual(projectWithApp.app);
+        expect(project.name).toEqual(projectOne.name);
+        expect(project.description).toEqual(projectOne.description);
+        expect(project.stack).toEqual(projectOne.stack);
+        expect(project.sourceCode).toEqual(projectOne.sourceCode);
+        expect(project.livePreview).toEqual(projectOne.livePreview);
     });
 
     it('should return 200 and an empty list of projects', async () => {

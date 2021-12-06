@@ -1,12 +1,13 @@
 import { Request, Response, NextFunction } from 'express';
+import { RequestProjectBody } from '../schemas/ProjectSchema';
 import { ApiError } from '../errors';
 
 export class CreateProjectHandler {
     public async handle(req: Request, _res: Response, next: NextFunction) {
         try {
-            const { body } = req;
+            const { body }: { body: RequestProjectBody } = req;
 
-            const { name, description, github, logo, app } = body;
+            const { name, description, stack, sourceCode, livePreview } = body;
 
             // name field verifications
             if (!name) {
@@ -26,27 +27,37 @@ export class CreateProjectHandler {
                 throw ApiError.badRequest('Project description must be a string.');
             }
 
-            // github field verifications
-            if (!github) {
-                throw ApiError.badRequest('Project Github link is required.');
+            // stack field verifications
+            if (!stack) {
+                throw ApiError.badRequest('Project stack is required.');
             }
 
-            if (typeof github !== 'string') {
-                throw ApiError.badRequest('Project Github link must be a string.');
+            let stackItemNotString = false;
+
+            stack.forEach((item) => {
+                if (typeof item !== 'string') stackItemNotString = true;
+            });
+
+            if (Array.isArray(stack) && stackItemNotString) {
+                throw ApiError.badRequest('Project stack must be a string array.');
             }
 
-            // logo field verifications
-            if (!logo) {
-                throw ApiError.badRequest('Project logo is required.');
+            // sourceCode field verifications
+            if (!sourceCode) {
+                throw ApiError.badRequest('Project sourceCode is required.');
             }
 
-            if (typeof logo !== 'string') {
-                throw ApiError.badRequest('Project logo must be a string.');
+            if (typeof sourceCode !== 'string') {
+                throw ApiError.badRequest('Project sourceCode must be a string.');
             }
 
-            // app field verifications
-            if (app && typeof app !== 'string') {
-                throw ApiError.badRequest('Project app must be a string.');
+            // livePreview field verifications
+            if (!livePreview) {
+                throw ApiError.badRequest('Project livePreview is required.');
+            }
+
+            if (typeof livePreview !== 'string') {
+                throw ApiError.badRequest('Project livePreview must be a string.');
             }
 
             next();

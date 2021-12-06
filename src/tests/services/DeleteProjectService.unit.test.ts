@@ -1,9 +1,9 @@
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import mongoose from 'mongoose';
 import { MongooseError } from '../../errors';
-import { IProject, Project } from '../../schemas/ProjectSchema';
+import { ProjectModel, Project } from '../../schemas/ProjectSchema';
 import { DeleteProjectService } from '../../services';
-import { projectWithApp } from '../mocks/Projects';
+import { projectOne } from '../mocks/Projects';
 
 describe('DeleteProjectService', () => {
     let mongoServer: MongoMemoryServer;
@@ -21,10 +21,10 @@ describe('DeleteProjectService', () => {
     });
 
     it('should delete the project with the given id', async () => {
-        const result: IProject = await Project.create(projectWithApp);
+        const result: ProjectModel = await Project.create(projectOne);
 
         const delService = new DeleteProjectService();
-        const delResult = await delService.execute(result.id as string);
+        const delResult = await delService.execute(result.id);
 
         expect(delResult).toBeUndefined();
     });
